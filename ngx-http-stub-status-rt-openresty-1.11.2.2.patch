@@ -1,6 +1,6 @@
-diff -urN openresty-1.11.2.2/bundle/nginx-1.11.2/src/event/ngx_event.c openresty-1.11.2.2-ngx-http-stub-status-rt/bundle/nginx-1.11.2/src/event/ngx_event.c
+diff -Nur openresty-1.11.2.2/bundle/nginx-1.11.2/src/event/ngx_event.c openresty-1.11.2.2-ngx-http-stub-status-rt-openresty/bundle/nginx-1.11.2/src/event/ngx_event.c
 --- openresty-1.11.2.2/bundle/nginx-1.11.2/src/event/ngx_event.c	2016-07-18 10:19:50.000000000 +0800
-+++ openresty-1.11.2.2-ngx-http-stub-status-rt/bundle/nginx-1.11.2/src/event/ngx_event.c	2016-11-23 13:25:27.000000000 +0800
++++ openresty-1.11.2.2-ngx-http-stub-status-rt-openresty/bundle/nginx-1.11.2/src/event/ngx_event.c	2016-11-28 15:43:26.541615413 +0800
 @@ -73,6 +73,8 @@
  ngx_atomic_t  *ngx_stat_writing = &ngx_stat_writing0;
  ngx_atomic_t   ngx_stat_waiting0;
@@ -10,18 +10,17 @@ diff -urN openresty-1.11.2.2/bundle/nginx-1.11.2/src/event/ngx_event.c openresty
  
  #endif
  
-@@ -495,7 +497,9 @@
+@@ -495,7 +497,8 @@
             + cl          /* ngx_stat_active */
             + cl          /* ngx_stat_reading */
             + cl          /* ngx_stat_writing */
 -           + cl;         /* ngx_stat_waiting */
 +           + cl          /* ngx_stat_waiting */
-+           + cl          /* ngx_stat_waiting */
 +           + cl;         /* ngx_stat_request_time */
  
  #endif
  
-@@ -543,6 +547,7 @@
+@@ -543,6 +546,7 @@
      ngx_stat_reading = (ngx_atomic_t *) (shared + 7 * cl);
      ngx_stat_writing = (ngx_atomic_t *) (shared + 8 * cl);
      ngx_stat_waiting = (ngx_atomic_t *) (shared + 9 * cl);
@@ -29,9 +28,9 @@ diff -urN openresty-1.11.2.2/bundle/nginx-1.11.2/src/event/ngx_event.c openresty
  
  #endif
  
-diff -urN openresty-1.11.2.2/bundle/nginx-1.11.2/src/event/ngx_event.h openresty-1.11.2.2-ngx-http-stub-status-rt/bundle/nginx-1.11.2/src/event/ngx_event.h
+diff -Nur openresty-1.11.2.2/bundle/nginx-1.11.2/src/event/ngx_event.h openresty-1.11.2.2-ngx-http-stub-status-rt-openresty/bundle/nginx-1.11.2/src/event/ngx_event.h
 --- openresty-1.11.2.2/bundle/nginx-1.11.2/src/event/ngx_event.h	2016-07-18 10:19:50.000000000 +0800
-+++ openresty-1.11.2.2-ngx-http-stub-status-rt/bundle/nginx-1.11.2/src/event/ngx_event.h	2016-11-23 13:25:52.000000000 +0800
++++ openresty-1.11.2.2-ngx-http-stub-status-rt-openresty/bundle/nginx-1.11.2/src/event/ngx_event.h	2016-11-28 15:42:17.955903565 +0800
 @@ -475,6 +475,7 @@
  extern ngx_atomic_t  *ngx_stat_reading;
  extern ngx_atomic_t  *ngx_stat_writing;
@@ -40,9 +39,9 @@ diff -urN openresty-1.11.2.2/bundle/nginx-1.11.2/src/event/ngx_event.h openresty
  
  #endif
  
-diff -urN openresty-1.11.2.2/bundle/nginx-1.11.2/src/http/modules/ngx_http_stub_status_module.c openresty-1.11.2.2-ngx-http-stub-status-rt/bundle/nginx-1.11.2/src/http/modules/ngx_http_stub_status_module.c
+diff -Nur openresty-1.11.2.2/bundle/nginx-1.11.2/src/http/modules/ngx_http_stub_status_module.c openresty-1.11.2.2-ngx-http-stub-status-rt-openresty/bundle/nginx-1.11.2/src/http/modules/ngx_http_stub_status_module.c
 --- openresty-1.11.2.2/bundle/nginx-1.11.2/src/http/modules/ngx_http_stub_status_module.c	2016-07-18 10:19:50.000000000 +0800
-+++ openresty-1.11.2.2-ngx-http-stub-status-rt/bundle/nginx-1.11.2/src/http/modules/ngx_http_stub_status_module.c	2016-11-23 13:29:44.000000000 +0800
++++ openresty-1.11.2.2-ngx-http-stub-status-rt-openresty/bundle/nginx-1.11.2/src/http/modules/ngx_http_stub_status_module.c	2016-11-28 15:42:17.966903686 +0800
 @@ -16,6 +16,7 @@
  static ngx_int_t ngx_http_stub_status_add_variables(ngx_conf_t *cf);
  static char *ngx_http_set_stub_status(ngx_conf_t *cf, ngx_command_t *cmd,
